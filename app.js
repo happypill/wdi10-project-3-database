@@ -7,9 +7,17 @@ import logger from 'morgan';
 import path from 'path';
 import lessMiddleware from 'less-middleware';
 import index from './routes/index';
+import eventAPI from './routes/event';
+import Event from './model/event'
+import mongoose from 'mongoose';
 
 const app = express();
-const debug = Debug('wdi-10-project-3-database:app');
+const debug = Debug('sg-wdi-10-project-3-nodejs:app');
+
+
+// Connect to mongo
+
+mongoose.connect('mongodb://localhost/Brace');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +36,7 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/api', eventAPI);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
