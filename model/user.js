@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 
-const bcrypt = require('bcrypt-nodejs');
-const crypto = require('crypto');
-const mongoose = require('mongoose');
+import bcrypt from 'bcrypt';
+const crypto = require('crypto'); 
 const events = require('./event');
 const Schema = mongoose.Schema;
 
@@ -25,7 +24,7 @@ const userSchema = new mongoose.Schema({
       location: String,
       website: String,
       picture: String,
-      organisedEvents: [{ type: Schema.Types.ObjectId, ref: 'events' }]
+      organisedEvents: [{ type: Schema.Types.ObjectId, ref: 'events' }],
       attendingEvents: [{ type: Schema.Types.ObjectId, ref: 'events' }]
     }
 },{timestamp:true});

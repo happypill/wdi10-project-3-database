@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-const user = require('./user');
+const Schema = mongoose.Schema;
+
 
 const eventSchema = new mongoose.Schema({
   name: String,
@@ -9,7 +10,7 @@ const eventSchema = new mongoose.Schema({
   end: String,
   //end: [Schema.Types.Mixed],
   attending: [{ type: Schema.Types.ObjectId, ref: 'user' }],
-  organiser: [{ type: Schema.Types.ObjectId, ref: 'user' }]
+  organiser: [{ type: Schema.Types.ObjectId, ref: 'user' }],
   //image: [Schema.Types.Mixed],
   details: String,
   eventPassed: Boolean
