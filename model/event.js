@@ -1,16 +1,16 @@
-import uuid from 'uuidv4';
 import mongoose from 'mongoose';
 const user = require('./user');
 
 const eventSchema = new mongoose.Schema({
-  eventID: { type: Schema.Types.ObjectId, ref: 'uuid' },
   name: String,
   venue: Number,
-  date: String,
-  time: String,
+  start: String,
+  //start: [Schema.Types.Mixed],
+  end: String,
+  //end: [Schema.Types.Mixed],
   attending: [{ type: Schema.Types.ObjectId, ref: 'user' }],
   organiser: [{ type: Schema.Types.ObjectId, ref: 'user' }]
-  imageURL: String,
+  //image: [Schema.Types.Mixed],
   details: String,
   eventPassed: Boolean
 },{timestamp: true})
