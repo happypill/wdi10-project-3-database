@@ -3,19 +3,34 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import Debug from 'debug';
 import express from 'express';
+import compression from 'compression';
 import logger from 'morgan';
+import chalk from 'chalk';
 // import favicon from 'serve-favicon';
 import path from 'path';
 import lessMiddleware from 'less-middleware';
 import mongoose from 'mongoose';
 import passport from 'passport';
-
+import flash from 'flash';
+import  expressStatusMonitor from 'express-status-monitor';
+import expressValidator from 'express-validator';
 /*Import Routes to make them Avaiable to App*/
 import index from './routes/index';
 import eventAPI from './routes/event';
 import Events from './model/event';
+//const dotenv = require('dotenv');
+const MongoStore = require('connect-mongo')(session);
+
+//dotenv.load({ path: '.env.example' });
+
+
+
+const app = express();
+const debug = Debug('sg-wdi-10-project-3-nodejs:app');
+const server = require('http').Server(app);
+
 /**
- * Connect to Mongo DB
+ *  Mongoose Connection.
  */
 
 mongoose.Promise = global.Promise;
@@ -25,13 +40,9 @@ mongoose.connection.on('error', (err) => {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
 });
-
 /**
  * API keys and Passport configuration.
  */
-const app = express();
-const debug = Debug('sg-wdi-10-project-3-nodejs:app');
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,25 +65,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('port', process.env.PORT || 3001);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.use(expressStatusMonitor());
+//app.use(expressStatusMonitor());
 app.use(compression());
-app.use(sass({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public')
-}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
 
 /* Why do we need this ? To connect mongodb by session? */
-const MongoStore = require('connect-mongo')(session);
+
 app.use(session({
   resave: true,
   saveUninitialized: true,
   secret: process.env.SESSION_SECRET,
   store: new MongoStore({
-    url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
+    url: process.env.MONGODB_URI || process.env.MONGOLAB_URI||'mongodb://localhost/brace',
     autoReconnect: true,
     clear_interval: 3600
   })
@@ -134,10 +141,13 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
+
+
 // Handle uncaughtException
 process.on('uncaughtException', (err) => {
   debug('Caught exception: %j', err);
   process.exit(1);
 });
+
 
 export default app;
