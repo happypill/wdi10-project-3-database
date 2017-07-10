@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const bookmarks = require('./bookmarks');
+const events = require('./event');
 const Schema = mongoose.Schema;
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
 
     email: { type: String, unique: true },
     password: String,
@@ -25,7 +25,8 @@ const userSchema = mongoose.Schema({
       location: String,
       website: String,
       picture: String,
-      bookmark: [{ type: Schema.Types.ObjectId, ref: 'bookmarks' }]
+      organisedEvents: [{ type: Schema.Types.ObjectId, ref: 'events' }]
+      attendingEvents: [{ type: Schema.Types.ObjectId, ref: 'events' }]
     }
 },{timestamp:true});
 

@@ -8,7 +8,7 @@ import path from 'path';
 import lessMiddleware from 'less-middleware';
 import index from './routes/index';
 import eventAPI from './routes/event';
-import Event from './model/event'
+import Events from './model/event'
 import mongoose from 'mongoose';
 
 const app = express();
