@@ -1,3 +1,7 @@
+/*
+Get Home Page
+
+*/
 import express from 'express';
 import User from '../model/user';
 
