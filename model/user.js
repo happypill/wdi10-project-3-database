@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import bcrypt from 'bcrypt';
+
 const crypto = require('crypto'); 
 const events = require('./event');
 const Schema = mongoose.Schema;

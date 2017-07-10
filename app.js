@@ -1,3 +1,4 @@
+import session from 'express-session';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import Debug from 'debug';
@@ -6,18 +7,31 @@ import logger from 'morgan';
 // import favicon from 'serve-favicon';
 import path from 'path';
 import lessMiddleware from 'less-middleware';
+import mongoose from 'mongoose';
+import passport from 'passport';
+
+/*Import Routes to make them Avaiable to App*/
 import index from './routes/index';
 import eventAPI from './routes/event';
-import Events from './model/event'
-import mongoose from 'mongoose';
+import Events from './model/event';
+/**
+ * Connect to Mongo DB
+ */
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/brace');
+mongoose.connection.on('error', (err) => {
+  console.error(err);
+  console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
+  process.exit();
+});
+
+/**
+ * API keys and Passport configuration.
+ */
 const app = express();
 const debug = Debug('sg-wdi-10-project-3-nodejs:app');
 
-
-// Connect to mongo
-
-mongoose.connect('mongodb://localhost/Brace');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,7 +48,6 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-
 /**
  * Express configuration.
  */
@@ -51,6 +64,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
+
+/* Why do we need this ? To connect mongodb by session? */
+const MongoStore = require('connect-mongo')(session);
 app.use(session({
   resave: true,
   saveUninitialized: true,
@@ -61,6 +77,8 @@ app.use(session({
     clear_interval: 3600
   })
 }));
+
+/* Make passport available to app. Passport will update user session with user info on authentication */
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -93,9 +111,11 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
+
+/* routes are made available to app */
+
 app.use('/', index);
 app.use('/api', eventAPI);
-
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
