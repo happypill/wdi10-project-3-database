@@ -2,6 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import User from '../model/user';
 
+
 const router = express.Router();
 
 /* GET index page. */

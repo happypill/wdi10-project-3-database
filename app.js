@@ -3,17 +3,22 @@ import cookieParser from 'cookie-parser';
 import Debug from 'debug';
 import express from 'express';
 import logger from 'morgan';
+import expressStatusMonitor from 'express-status-monitor';
+import compression from 'compression'
+import session from 'express-session'
+import passport from 'passport'
 // import favicon from 'serve-favicon';
 import path from 'path';
 import lessMiddleware from 'less-middleware';
 import index from './routes/index';
 import eventAPI from './routes/event';
-import Events from './model/event'
+import Events from './model/event';
+import auth from './routes/auth';
 import mongoose from 'mongoose';
 
 const app = express();
 const debug = Debug('sg-wdi-10-project-3-nodejs:app');
-
+const passportConfig = require('./config/passport')
 
 // Connect to mongo
 
@@ -43,40 +48,28 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(expressStatusMonitor());
 app.use(compression());
-app.use(sass({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public')
-}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(expressValidator());
-app.use(session({
-  resave: true,
-  saveUninitialized: true,
-  secret: process.env.SESSION_SECRET,
-  store: new MongoStore({
-    url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-    autoReconnect: true,
-    clear_interval: 3600
-  })
-}));
+
+// app.use(session({
+//   resave: true,
+//   saveUninitialized: true,
+//   secret: process.env.SESSION_SECRET,
+//   store: new MongoStore({
+//     url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
+//     autoReconnect: true,
+//     clear_interval: 3600
+//   })
+// }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
-app.use((req, res, next) => {
-  if (req.path === '/api/upload') {
-    next();
-  } else {
-    lusca.csrf()(req, res, next);
-  }
-});
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.xssProtection(true));
-app.use((req, res, next) => {
-  res.locals.user = req.user;
-  next();
-});
+// app.use(flash());
+
+// app.use((req, res, next) => {
+//  res.locals.user = req.user;
+//  next();
+// });
 app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
   if (!req.user &&
@@ -91,10 +84,10 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 app.use('/', index);
 app.use('/api', eventAPI);
+app.use('/auth', auth);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
