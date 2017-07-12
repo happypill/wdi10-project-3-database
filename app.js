@@ -15,6 +15,7 @@ import eventAPI from './routes/event';
 import Events from './model/event';
 import auth from './routes/auth';
 import mongoose from 'mongoose';
+import userController from './controllers/user';
 
 const app = express();
 const debug = Debug('sg-wdi-10-project-3-nodejs:app');
@@ -55,9 +56,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(session({
 //   resave: true,
 //   saveUninitialized: true,
-//   secret: process.env.SESSION_SECRET,
+//   secret: process.env.SESSION_SECRET||'hello',
 //   store: new MongoStore({
-//     url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
+//     //url: process.env.MONGODB_URI || process.env.MONGOLAB_URI||'mongodb://localhost/brace',
+//     url: 'mongodb://localhost/brace',
 //     autoReconnect: true,
 //     clear_interval: 3600
 //   })
@@ -70,20 +72,32 @@ app.use(passport.session());
 //  res.locals.user = req.user;
 //  next();
 // });
-app.use((req, res, next) => {
-  // After successful login, redirect back to the intended page
-  if (!req.user &&
-      req.path !== '/login' &&
-      req.path !== '/signup' &&
-      !req.path.match(/^\/auth/) &&
-      !req.path.match(/\./)) {
-    req.session.returnTo = req.path;
-  } else if (req.user &&
-      req.path == '/account') {
-    req.session.returnTo = req.path;
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   // After successful login, redirect back to the intended page
+//   if (!req.user &&
+//       req.path !== '/login' &&
+//       req.path !== '/signup' &&
+//       !req.path.match(/^\/auth/) &&
+//       !req.path.match(/\./)) {
+//     req.session.returnTo = req.path;
+//   } else if (req.user &&
+//       req.path == '/account') {
+//     req.session.returnTo = req.path;
+//   }
+//   next();
+// });
+
+// app.get('/login', userController.getLogin);
+// app.post('/login', userController.postLogin);
+// app.get('/logout', userController.logout);
+// app.get('/forgot', userController.getForgot);
+// app.post('/forgot', userController.postForgot);
+// app.get('/signup', userController.getSignup);
+// app.post('/signup', userController.postSignup);
+// app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
+// app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
+// app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
+//
 
 app.use('/', index);
 app.use('/api', eventAPI);
