@@ -1,27 +1,22 @@
 import Event from '../model/Event';
 import User from '../model/User';
 
-
-/*
-* Get books
-*/
-exports.getAllEvents = (req, res, next) => {
-
-  console.log("Request All Events");
-
-  Event.find()
-    .populate('attending')
-    .populate('organiser')
-    .exec((err, event) => {
-      if (err) return res.status(404).send('Not found');
-      res.json(event);
-    });
+exports.getEvent = (req, res) => {
+  Event.find({},(err,event) => {
+    res.json(event);
+  })
 }
 
-/*
-*  Get a book
-*/
-exports.getEvent = (req, res, next) => {
+exports.getSpecificEvent = (req, res) => {
+  Event.findOne({'_id':req.params.id},(err,event) => {
+    res.json(event);
+  })
+}
+
+
+
+
+exports.getEventByAttenOrg = (req, res, next) => {
 
   console.log("Request one Event");
 
@@ -36,9 +31,6 @@ exports.getEvent = (req, res, next) => {
 }
 
 
-/*
-*  Create Event, update User with Organiser
-*/
 exports.createEvent= (req, res, next) => {
 
   console.log("Create Event : Add Organiser to User");
@@ -72,13 +64,11 @@ exports.createEvent= (req, res, next) => {
           });
 
         });
-           res.json(book);
+           res.json(event);
       });
 }
 
-/*
-* Update Event
-*/
+
 exports.updateEvent = (req, res, next) => {
 
   console.log("Request : UpdateEvent");
@@ -116,15 +106,12 @@ exports.updateEvent = (req, res, next) => {
            const userAttending = foundEvent.attending;
            userAttending.splice(userAttending.indexOf(organisedId),1);
 
-           foundBorrower.save( (err, saveAttending) => {
+           foundEvent.save( (err, saveAttending) => {
              if (err) return res.status(400).send('Bad Request');
              console.log("Remove field Attending from User");
              console.log(saveAttending);
            });
          });
-
-         foundEvent.reservedBy = null;
-         foundEvent.reserved = false;
        }
        console.log(foundEvent);
        foundEvent.save((err, updatedEvent)=> {
@@ -136,9 +123,7 @@ exports.updateEvent = (req, res, next) => {
 
 }
 
-/*
-*  Delete Event
-*/
+
 exports.deleteEvent = (req, res, next) => {
 
   const id = req.params.id;
