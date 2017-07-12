@@ -1,10 +1,6 @@
 import express from 'express';
 import eventController from '../controller/event';
 
-/* middleware for file handling en route to cloudinary */
-import multer from 'multer';
-const upload = multer({ dest: './uploads/' });
-
 const router = express.Router();
 
 router.get('/event', eventController.getAllEvents);
