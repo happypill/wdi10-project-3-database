@@ -77,6 +77,19 @@ router.post('/', (req, res, next) => {
 
      });
    });
-
+/*
+ *  Delete
+*/
+ router.delete('/event/:id', (req, res, next) => {
+   const id = req.params.id;
+   Event.findById(id, (err, event) => {
+     if (err) return res.status(400).send('Bad Request');
+     if(!event){
+       return res.status(404).send('Not Found');
+     }
+     event.remove();
+     res.json("ok");
+   });
+ });
 
 export default router;
