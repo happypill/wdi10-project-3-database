@@ -41,7 +41,7 @@ router.post('/', (req, res, next) => {
 /*
   *  Read
   */
-  router.get('/:id', (req, res, next) => {
+  router.get('/event/:id', (req, res, next) => {
 
     const id = req.params.id;
     Event.findById(id, (err, event) => {
@@ -52,7 +52,7 @@ router.post('/', (req, res, next) => {
 /*
    *  Update
    */
-   router.put('/:id', (req, res, next) => {
+   router.put('/event/:id', (req, res, next) => {
      console.log("Got PUT Request");
 
      const event = req.body.event;
