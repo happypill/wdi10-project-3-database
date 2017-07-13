@@ -15,6 +15,10 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     const event = new Event();
     event.name = req.name
+      // venue:'Orchard Road',
+      // joinedIndividual:'John',
+      // imageUrl:'fdfdfdfd',
+      // details:'Bring an apple'
     event.save();
 
 })
@@ -45,35 +49,34 @@ router.post('/', (req, res, next) => {
       res.json(event);
     });
   });
- 
--/*		
- -   *  Update		
- -   */		
- -   router.put('/:id', (req, res, next) => {		
- -     console.log("Got PUT Request");		
- -		
- -     const event = req.body.event;		
- -		
- -     Car.findById(event._id, (err, foundEvent) => {		
- -        if (err) return res.status(400).send('Bad Request');		
- -		
- -        if(!foundCar){		
- -          return res.status(404).send('Not Found');		
- -        }		
- -		
- -        foundEvent.manufacturer = event.name;		
- -        foundEvent.model = event.venue;		
- -        foundEvent.year = event.joinedIndividual;		
- -        foundEvent.color = event.imageURL;		
- -        foundEvent.kms = event.details;		
- -    		
- -        foundEvent.save((err, car)=> {		
- -          if (err) return res.status(400).send('Bad Request');		
- -          res.json(foundEvent);		
- -        });		
-  		  
- -     });		
- -   });
+/*
+   *  Update
+   */
+   router.put('/:id', (req, res, next) => {
+     console.log("Got PUT Request");
+
+     const event = req.body.event;
+
+     Car.findById(event._id, (err, foundEvent) => {
+        if (err) return res.status(400).send('Bad Request');
+
+        if(!foundCar){
+          return res.status(404).send('Not Found');
+        }
+
+        foundEvent.manufacturer = event.name;
+        foundEvent.model = event.venue;
+        foundEvent.year = event.joinedIndividual;
+        foundEvent.color = event.imageURL;
+        foundEvent.kms = event.details;
+    
+        foundEvent.save((err, car)=> {
+          if (err) return res.status(400).send('Bad Request');
+          res.json(foundEvent);
+        });
+
+     });
+   });
 
 
 export default router;
