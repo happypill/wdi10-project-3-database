@@ -26,6 +26,7 @@
     "flash": "^1.1.0",
     "less-middleware": "^2.2.0",
     "mongoose": "^4.11.1",
+    "mongoose-seed": "^0.3.2",
     "morgan": "~1.7.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",

@@ -17,7 +17,6 @@ router.post('/', (req, res, next) => {
     event.name = req.name;
     event.save();
 });
-
 /*
  *  Create
  */
@@ -36,9 +35,9 @@ router.post('/', (req, res, next) => {
 /*
   *  Read
   */
-  router.get('/event/:id', (req, res, next) => {
+  router.get('/', (req, res, next) => {
 
-    const id = req.params.id;
+    const id = req.params._id;
     Event.findById(id, (err, event) => {
       if (err) return res.status(404).send('Not found');
       res.json(event);
@@ -47,7 +46,7 @@ router.post('/', (req, res, next) => {
 /*
    *  Update
    */
-router.put('/event/:id', (req, res, next) => {
+router.put('/:id', (req, res, next) => {
  console.log("Got PUT Request");
 
  const event = req.body.event;
@@ -75,8 +74,8 @@ router.put('/event/:id', (req, res, next) => {
 /*
  *  Delete
 */
- router.delete('/event/:id', (req, res, next) => {
-   const id = req.params.id;
+ router.delete('/:id', (req, res, next) => {
+   const id = req.params._id;
    Event.findById(id, (err, event) => {
      if (err) return res.status(400).send('Bad Request');
      if(!event){
