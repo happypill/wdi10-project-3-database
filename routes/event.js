@@ -54,7 +54,7 @@ router.put('/:id', (req, res, next) => {
  Event.findById(event._id, (err, foundEvent) => {
     if (err) return res.status(400).send('Bad Request');
 
-    if(!foundCar){
+    if(!foundEvent){
       return res.status(404).send('Not Found');
     }
 
